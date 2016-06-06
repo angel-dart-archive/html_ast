@@ -3,12 +3,15 @@ part of heaven;
 class Heaven {
   static Heaven globalInstance;
   HeavenElement root;
+  Router router;
   Element rootNode;
   State state = new State();
+  bool pushState;
 
   int nRendered = 0;
 
-  Heaven(HeavenElement this.root, Element this.rootNode) {
+  Heaven(HeavenElement this.root, Element this.rootNode,
+      {bool this.pushState: true}) {
     Heaven.globalInstance = this;
     state.onUpdate.listen(onStateChanged);
   }

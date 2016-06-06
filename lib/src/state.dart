@@ -41,6 +41,10 @@ class State {
     set(path, target..add(value));
   }
 
+  forceUpdate() {
+    onUpdate_.add(new StateUpdateEvent("", "", data_));
+  }
+
   get(String path) {
     Map parent = resolveParent_(path);
     print("get: $path");
