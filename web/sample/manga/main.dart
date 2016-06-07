@@ -1,5 +1,6 @@
 library manga;
 
+import 'dart:convert';
 import 'dart:html';
 import 'package:heaven/heaven.dart';
 

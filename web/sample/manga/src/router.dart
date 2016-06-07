@@ -1,6 +1,7 @@
 part of manga;
 
-class AppRouter extends HeavenElement {
+class AppRouter extends RoutedHeavenElement {
+  @override
   Router router = new Router("/", [new Route("*", new MangaList())]);
 
   AppRouter() {

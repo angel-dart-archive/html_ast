@@ -9,6 +9,14 @@ class State {
   operator [](String path) => get(path);
   operator []=(String path, value) => set(path, value);
 
+  State();
+
+  State.copy(State parent) {
+    for (String key in parent.data_.keys) {
+      data_[key] = parent.data_[key];
+    }
+  }
+
   Map resolveParent_(String path) {
     print("Resolving $path");
     Map parent = data_;
@@ -42,7 +50,7 @@ class State {
   }
 
   forceUpdate() {
-    onUpdate_.add(new StateUpdateEvent("", "", data_));
+    onUpdate_.add(new StateUpdateEvent("", "", this, new State.copy(this)));
   }
 
   get(String path) {
@@ -57,7 +65,9 @@ class State {
 
     if (parent != null && (parent is Map)) {
       print("Let's set $path to $value, yeah!");
-      onUpdate_.add(new StateUpdateEvent(path, value, data_));
+      State newState = new State.copy(this);
+      onUpdate_.add(new StateUpdateEvent(path, value, this, newState));
+      parent = newState.resolveParent_(path);
       parent[lastKey_(path)] = value;
     } else {
       print("Invalid parent for set: $parent");
@@ -67,10 +77,11 @@ class State {
 
 /// Triggered upon modifying the state of an application.
 class StateUpdateEvent {
-  final Map<String, dynamic> priorState;
+  final State priorState;
+  final State newState;
   final String path;
   final value;
 
   const StateUpdateEvent(
-      String this.path, this.value, Map<String, dynamic> this.priorState);
+      String this.path, this.value, State this.priorState, State this.newState);
 }

@@ -4,6 +4,8 @@ part of heaven;
 /// on the application state.
 class HeavenElement {
   int ID;
+  List<String> requires = [];
+  Map<String, dynamic> routeParams = {};
   Map<String, dynamic> props = {};
   State state;
   HeavenElement([Map<String, dynamic> this.props]);
@@ -14,4 +16,8 @@ class HeavenElement {
   String toString() {
     return Heaven.globalInstance.renderElem(this).innerHtml;
   }
+}
+
+class RoutedHeavenElement extends HeavenElement {
+  Router router;
 }
