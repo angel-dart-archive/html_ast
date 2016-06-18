@@ -4,9 +4,11 @@ part of heaven;
 class State {
   Map<String, dynamic> data_ = {};
   StreamController onUpdate_ = new StreamController();
+
   Stream get onUpdate => onUpdate_.stream;
 
   operator [](String path) => get(path);
+
   operator []=(String path, value) => set(path, value);
 
   State();
@@ -35,7 +37,9 @@ class State {
   }
 
   String lastKey_(String path) {
-    return path.split(".").last;
+    return path
+        .split(".")
+        .last;
   }
 
   Map dump() => data_;
@@ -69,7 +73,8 @@ class State {
 class StateUpdateEvent {
   final String path;
   final value;
+  final bool rerender;
 
-  const StateUpdateEvent(
-      String this.path, this.value);
+  const StateUpdateEvent(String this.path, this.value,
+      {bool this.rerender: true});
 }

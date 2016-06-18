@@ -1,16 +1,15 @@
 /// A React-inspired virtual DOM implementation.
-///
-/// Includes integrations with Angel.
 library heaven;
 
 import 'dart:async';
-import 'dart:html';
+import 'dart:html' as html;
 
 part 'src/state.dart';
 
+/// Controls a virtual DOM within the context of one root element.
 class DOM {
-  static Element _domRoot;
-  static VirtualDOMElement _parent;
+  static html.Element _domRoot;
+  static Element _parent;
   static int _nRendered = 0;
 
   static final RegExp _rgxArray = new RegExp(r"^\[\]");
@@ -26,32 +25,34 @@ class DOM {
 
   static void rerenderDom() {
     // Remember: shouldUpdate, etc.
-    Element rerendered = rerenderElem(_parent);
-    _domRoot.children..clear()..add(rerendered);
+    html.Element rerendered = rerenderElem(_parent);
+    _domRoot.children
+      ..clear()
+      ..add(rerendered);
   }
 
-  static Element rerenderElem(VirtualDOMElement element) {
+  static html.Element rerenderElem(Element element) {
     if (!element.shouldUpdate(priorState, state)) {
-      return document.querySelector("[data-heaven-id='${element.id}']");
+      return html.document.querySelector("[data-heaven-id='${element._id}']");
     }
 
     return renderElem(element);
   }
 
-  static Element renderElem(VirtualDOMElement element,
+  static html.Element renderElem(Element element,
       {bool incrementRendered: false}) {
     if (incrementRendered)
-      element.id = _nRendered++;
+      element._id = _nRendered++;
 
     element..state = state;
-    Element result = document.createElement(element.tagName);
+    html.Element result = html.document.createElement(element.tagName);
 
     for (String key in element.requiredKeys) {
       if (_rgxArray.hasMatch(key)) {
         String _key = key.replaceAll(_rgxArray, "");
-        var value = state.get(key);
+        var value = state.get(_key);
         if (value == null)
-          state.set(key, []);
+          state.set(_key, []);
       } else {
         var value = state.get(key);
         if (value == null)
@@ -62,15 +63,13 @@ class DOM {
     for (String key in element.properties.keys) {
       var value = element.properties[key];
 
-      if (value is String) {
-        if (key == "className")
-          result.className = value;
-        else result.setAttribute(key, value);
-      }
+      if (key == "className")
+        result.className = value.toString();
+      else result.setAttribute(key, value.toString());
     }
 
     if (element.children.isNotEmpty) {
-      for (VirtualDOMElement child in element.children) {
+      for (Element child in element.children) {
         result.children.add(
             renderElem(child, incrementRendered: incrementRendered));
       }
@@ -82,7 +81,7 @@ class DOM {
       result.appendText(element.text);
 
     element.afterRender(
-        result..setAttribute("data-heaven-id", element.id.toString()));
+        result..setAttribute("data-heaven-id", element._id.toString()));
     return result;
   }
 
@@ -91,37 +90,62 @@ class DOM {
     Map parent = state.resolveParent_(e.path);
     parent[state.lastKey_(e.path)] = e.value;
 
-    rerenderDom();
+    if (e.rerender)
+      rerenderDom();
   }
 
-  static void init(VirtualDOMElement parent, Element domRoot) {
+  static void init(Element parent, html.Element domRoot) {
     _domRoot = domRoot;
     _parent = parent;
     state.onUpdate.listen(_onStateChange);
   }
 }
 
-class VirtualDOMElement {
-  int id;
+/// Represents a virtual DOM node.
+class Element {
+  int _id;
+
+  /// This element's tag name.
   String tagName;
+
+  /// A dynamic set of properties that will be mapped to HTML attributes.
   Map<String, dynamic> properties;
-  List<VirtualDOMElement> children;
+  List<Element> children;
+
+  /// If set, will override children and text, and set the rendered element's inner HTML.
   String innerHtml;
+
+  /// Inner text to be appended to the element.
   String text;
 
+
+  Map propTypes = null;
+
+  /// Any number of required keys/dot paths that the application state must have to render this component.
   List<String> requiredKeys = [];
+
+  /// The current state of the application.
   State state;
 
-  VirtualDOMElement({String this.tagName: "div",
+  Element({String this.tagName: "div",
   Map<String, dynamic> this.properties: const {},
-  List<VirtualDOMElement> this.children: const [],
+  List<Element> this.children: const [],
   String this.innerHtml: "",
   String this.text: ""});
 
-  afterRender(Element elem) {
+  /// Called after the element has been rendered to a DOM node.
+  afterRender(html.Element elem) {
+  }
+
+  /// Called before the element is rendered.
+  ///
+  /// If you modify the application state, make sure to pass
+  /// `rerender: false`.
+  preRender() {
 
   }
 
+  /// Called before preRender, to determine whether the element should re-render.
   bool shouldUpdate(State priorState, State currentState) {
     return true;
   }

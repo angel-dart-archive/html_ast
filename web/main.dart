@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:html';
 import 'package:heaven/heaven.dart' as heaven;
 
-class Button extends heaven.VirtualDOMElement {
+class Button extends heaven.Element {
   String get innerHtml => '''
   <div class="ui button">
     <i class="smile icon"></i>
@@ -23,10 +23,10 @@ class Button extends heaven.VirtualDOMElement {
   }
 }
 
-class CookieClicker extends heaven.VirtualDOMElement {
+class CookieClicker extends heaven.Element {
   List<String> requiredKeys = ["clicks"];
 
-  List<heaven.VirtualDOMElement> children = [new Button()];
+  List<heaven.Element> children = [new Button()];
 
   String get text => "${state.get("clicks")} clicks";
 }
