@@ -45,6 +45,7 @@ class DOM {
       element._id = _nRendered++;
 
     element..state = state;
+    element.preRender();
     html.Element result = html.document.createElement(element.tagName);
 
     for (String key in element.requiredKeys) {
@@ -128,10 +129,15 @@ class Element {
   State state;
 
   Element({String this.tagName: "div",
-  Map<String, dynamic> this.properties: const {},
-  List<Element> this.children: const [],
+  Map<String, dynamic> this.properties,
+  List<Element> this.children,
   String this.innerHtml: "",
-  String this.text: ""});
+  String this.text: ""}) {
+    if (properties == null)
+      properties = {};
+    if (children == null)
+      children = [];
+  }
 
   /// Called after the element has been rendered to a DOM node.
   afterRender(html.Element elem) {
