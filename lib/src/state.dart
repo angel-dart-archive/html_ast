@@ -1,70 +1,34 @@
-part of heaven;
+final RegExp _symbol = new RegExp(r'Symbol\("([^"]+)"\)');
 
-/// Serves as a single store for application-related data.
-class State {
-  Map<String, dynamic> data_ = {};
-  StreamController onUpdate_ = new StreamController();
+abstract class AbstractState<K, V> {
+  Map<K, V> _data;
 
-  Stream get onUpdate => onUpdate_.stream;
+  V operator [](K key) => get(key);
 
-  operator [](String path) => get(path);
+  Map<K, V> dump();
 
-  operator []=(String path, value) => set(path, value);
+  V get(K key);
+}
 
-  State();
+@proxy
+class State extends AbstractState<String, dynamic> {
+  final Map<String, dynamic> _data;
 
-  State.copy(State parent) {
-    for (String key in parent.data_.keys) {
-      data_[key] = parent.data_[key];
-    }
-  }
+  State() : _data = new Map<String, dynamic>.unmodifiable({});
 
-  Map resolveParent_(String path) {
-    Map parent = data_;
-    List<String> paths = path.split(".");
+  State.fromMap(Map<String, Map> data)
+      : _data = new Map<String, dynamic>.unmodifiable(data);
 
-    for (int i = 0; i < paths.length - 1; i++) {
-      Map target = parent[paths[i]];
-      if (target == null || !(target is Map)) {
-        print("Dude! This ain't a Map: $target");
-        break;
-      }
+  get(String key) => _data[key];
 
-      parent = target;
-    }
+  Map<String, dynamic> dump() => _data;
 
-    return parent;
-  }
+  @override
+  noSuchMethod(Invocation invocation) {
+    if (invocation.isGetter || invocation.isAccessor) {
+      final match = _symbol.firstMatch(invocation.memberName.toString());
 
-  String lastKey_(String path) {
-    return path
-        .split(".")
-        .last;
-  }
-
-  Map dump() => data_;
-
-  append(String path, value) {
-    List target = get(path);
-    set(path, target..add(value));
-  }
-
-  forceUpdate() {
-    onUpdate_.add(new StateUpdateEvent("", ""));
-  }
-
-  get(String path) {
-    Map parent = resolveParent_(path);
-    return parent[lastKey_(path)];
-  }
-
-  void set(String path, value) {
-    Map parent = resolveParent_(path);
-
-    if (parent != null && (parent is Map)) {
-      onUpdate_.add(new StateUpdateEvent(path, value));
-    } else {
-      print("Invalid parent for set: $parent");
+      if (match != null) return get(match.group(1));
     }
   }
 }
