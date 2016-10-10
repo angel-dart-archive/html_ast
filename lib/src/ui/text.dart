@@ -4,7 +4,7 @@ import '../state.dart';
 
 TextElement text(String text) => new TextElement(text);
 
-class TextElement extends Element<Map<String, dynamic>, State> {
+class TextElement extends StandardElement {
   final String text;
 
   TextElement(this.text) : super('', null, null, null);

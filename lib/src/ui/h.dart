@@ -28,32 +28,32 @@ H5Element h5(State state,
 
 abstract class HeaderElement {}
 
-class H1Element extends Element<Map<String, dynamic>, State>
+class H1Element extends StandardElement
     implements HeaderElement {
   H1Element(State state, Map<String, dynamic> props,
       [List<Element<Map<String, dynamic>, State>> children])
       : super('h1', state, props ?? {}, children);
 }
 
-class H2Element extends Element<Map<String, dynamic>, State> implements HeaderElement{
+class H2Element extends StandardElement implements HeaderElement{
   H2Element(State state, Map<String, dynamic> props,
       [List<Element<Map<String, dynamic>, State>> children])
       : super('h2', state, props ?? {}, children);
 }
 
-class H3Element extends Element<Map<String, dynamic>, State> implements HeaderElement{
+class H3Element extends StandardElement implements HeaderElement{
   H3Element(State state, Map<String, dynamic> props,
       [List<Element<Map<String, dynamic>, State>> children])
       : super('h3', state, props ?? {}, children);
 }
 
-class H4Element extends Element<Map<String, dynamic>, State> implements HeaderElement{
+class H4Element extends StandardElement implements HeaderElement{
   H4Element(State state, Map<String, dynamic> props,
       [List<Element<Map<String, dynamic>, State>> children])
       : super('h4', state, props ?? {}, children);
 }
 
-class H5Element extends Element<Map<String, dynamic>, State> implements HeaderElement{
+class H5Element extends StandardElement implements HeaderElement{
   H5Element(State state, Map<String, dynamic> props,
       [List<Element<Map<String, dynamic>, State>> children])
       : super('h5', state, props ?? {}, children);
