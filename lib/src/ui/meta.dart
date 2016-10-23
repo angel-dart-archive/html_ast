@@ -8,7 +8,7 @@ MetaElement meta(State state,
   final properties = {}..addAll(props);
 
   if (name != null)
-    properties['href'] = name;
+    properties['name'] = name;
 
   return new MetaElement(state, properties);
 }

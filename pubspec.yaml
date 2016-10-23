@@ -1,5 +1,5 @@
 name: heaven
-version: 1.0.0-dev+2
+version: 1.0.0-dev+3
 description: Isomorphic library to create nested templates. Supports string rendering, DOM rendering and virtual DOM.
 author: Tobe O <thosakwe@gmail.com>
 homepage: https://github.com/angel-dart/heaven
