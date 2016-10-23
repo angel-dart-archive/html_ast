@@ -1,6 +1,6 @@
 name: heaven
-version: 1.0.0-dev+1
-description: A minimal virtual DOM implementation.
+version: 1.0.0-dev
+description: Isomorphic library to create nested templates. Supports string rendering, DOM rendering and virtual DOM.
 author: Tobe O <thosakwe@gmail.com>
 homepage: https://github.com/angel-dart/heaven
 dependencies:
