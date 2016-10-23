@@ -8,6 +8,8 @@ export 'src/ui/head.dart';
 export 'src/ui/i.dart';
 export 'src/ui/input.dart';
 export 'src/ui/list.dart';
+export 'src/ui/link.dart';
+export 'src/ui/meta.dart';
 export 'src/ui/p.dart';
 export 'src/ui/text.dart';
 export 'src/ui/title.dart';
